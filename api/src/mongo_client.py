@@ -20,7 +20,7 @@ def get_offer_details(offer_id):
     try:
         object_id = ObjectId(offer_id)
     except Exception:
-        return None  # si offer_id est invalide
+        return None
 
     return offers_collection.find_one({"_id": object_id})
 

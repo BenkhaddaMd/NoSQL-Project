@@ -61,7 +61,7 @@ async def get_offers(from_code: str, to_code: str, limit: int = 10):
             return JSONResponse(content=cached[:limit])
 
         offers = search_offers(from_code, to_code, limit)
-        offers = [serialize_offer(offer) for offer in offers]  # conversion _id
+        offers = [serialize_offer(offer) for offer in offers]
 
         cache_offers(from_code, to_code, offers)
 
@@ -77,17 +77,7 @@ async def get_recommendations_route(city: str, k: int = 3):
         return {"recommendations": recommendations}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/login")
-async def login(userId: str):
-    try:
-        session_id = create_session(userId)
-        return {
-            "token": session_id,
-            "expires_in": 900
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    
 
 @app.get("/offers/{offer_id}")
 async def get_offer_details_route(offer_id: str):
@@ -96,7 +86,7 @@ async def get_offer_details_route(offer_id: str):
         if cached:
             return JSONResponse(content=cached)
 
-        offer = mongo_get_offer_details(offer_id)  # pas de await ici
+        offer = mongo_get_offer_details(offer_id)
         if not offer:
             raise HTTPException(status_code=404, detail="Offer not found")
 
