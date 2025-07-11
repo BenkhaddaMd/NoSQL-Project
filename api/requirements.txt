@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+redis
+pymongo
+neo4j
+python-multipart
+python-jose[cryptography]
+passlib
+gunicorn
