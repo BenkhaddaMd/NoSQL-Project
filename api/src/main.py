@@ -6,6 +6,7 @@ import json
 import gzip
 from datetime import datetime
 from typing import Optional
+from bson import ObjectId
 
 app = FastAPI()
 
@@ -48,28 +49,31 @@ async def startup_db_clients():
     initialize_mongo()
     initialize_neo4j()
 
+def serialize_offer(offer):
+    offer["_id"] = str(offer["_id"])
+    return offer
+
 @app.get("/offers")
-async def search_offers(from_code: str, to_code: str, limit: int = 10):
+async def get_offers(from_code: str, to_code: str, limit: int = 10):
     try:
-        # 1. Vérifier le cache Redis
         cached = get_cached_offers(from_code, to_code)
         if cached:
-            return JSONResponse(cached[:limit])
-        
-        # 2. Requête MongoDB si cache miss
+            return JSONResponse(content=cached[:limit])
+
         offers = search_offers(from_code, to_code, limit)
-        
-        # 3. Mise en cache
+        offers = [serialize_offer(offer) for offer in offers]  # conversion _id
+
         cache_offers(from_code, to_code, offers)
-        
-        return JSONResponse(offers)
+
+        return JSONResponse(content=offers)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.get("/reco")
-async def get_recommendations(city: str, k: int = 3):
+async def get_recommendations_route(city: str, k: int = 3):
     try:
-        recommendations = get_recommendations(city, k)
+        recommendations = await neo4j_get_recommendations(city, k)
         return {"recommendations": recommendations}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

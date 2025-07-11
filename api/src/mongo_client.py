@@ -34,5 +34,60 @@ def initialize_mongo():
                 "currency": "EUR",
                 "legs": [{"flightNum": "AF123"}]
             },
-            # Ajouter plus d'exemples...
+            {
+                "from": "PAR",
+                "to": "NYC",
+                "provider": "Delta",
+                "price": 450,
+                "currency": "EUR",
+                "legs": [{"flightNum": "DL456"}]
+            },
+            {
+                "from": "LON",
+                "to": "PAR",
+                "provider": "British Airways",
+                "price": 140,
+                "currency": "EUR",
+                "legs": [{"flightNum": "BA789"}]
+            },
+            {
+                "from": "PAR",
+                "to": "BER",
+                "provider": "Lufthansa",
+                "price": 120,
+                "currency": "EUR",
+                "legs": [{"flightNum": "LH101"}]
+            },
+            {
+                "from": "BER",
+                "to": "ROM",
+                "provider": "Ryanair",
+                "price": 60,
+                "currency": "EUR",
+                "legs": [{"flightNum": "FR202"}]
+            },
+            {
+                "from": "NYC",
+                "to": "LON",
+                "provider": "United",
+                "price": 500,
+                "currency": "USD",
+                "legs": [{"flightNum": "UA303"}]
+            },
+            {
+                "from": "ROM",
+                "to": "PAR",
+                "provider": "Air France",
+                "price": 130,
+                "currency": "EUR",
+                "legs": [{"flightNum": "AF404"}]
+            },
+            {
+                "from": "LON",
+                "to": "NYC",
+                "provider": "Virgin Atlantic",
+                "price": 470,
+                "currency": "GBP",
+                "legs": [{"flightNum": "VS505"}]
+            }
         ])
