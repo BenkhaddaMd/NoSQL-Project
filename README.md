@@ -15,7 +15,7 @@ SupDeVinci Travel Hub (STH) est une plateforme B2C qui agrège vols, hébergemen
 
 1. Cloner le projet :
 ```bash
-git clone https://github.com/BenkhaddaMd/NoSQL-Project.git
+git clone git@github.com:BenkhaddaMd/NoSQL-Project.git
 cd NoSQL-Project
 ```
 
