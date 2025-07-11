@@ -27,9 +27,9 @@ from src.redis_client import (
     get_cached_offers,
     redis_client
 )
-from src.mongo_client import initialize_mongo, mongo_client, search_offers, get_offer_details
+from src.mongo_client import initialize_mongo, mongo_client, search_offers
 from src.neo4j_client import initialize_neo4j, get_recommendations
-
+from src.mongo_client import get_offer_details as mongo_get_offer_details
 
 @app.middleware("http")
 async def add_process_time_header(request, call_next):
@@ -73,7 +73,7 @@ async def get_offers(from_code: str, to_code: str, limit: int = 10):
 @app.get("/reco")
 async def get_recommendations_route(city: str, k: int = 3):
     try:
-        recommendations = await neo4j_get_recommendations(city, k)
+        recommendations = get_recommendations(city, k)
         return {"recommendations": recommendations}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -90,22 +90,20 @@ async def login(userId: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/offers/{offer_id}")
-async def get_offer_details(offer_id: str):
+async def get_offer_details_route(offer_id: str):
     try:
-        # 1. Vérifier le cache
         cached = get_cached_offer_details(offer_id)
         if cached:
-            return JSONResponse(cached)
-        
-        # 2. Requête MongoDB
-        offer = get_offer_details(offer_id)
+            return JSONResponse(content=cached)
+
+        offer = mongo_get_offer_details(offer_id)  # pas de await ici
         if not offer:
             raise HTTPException(status_code=404, detail="Offer not found")
-        
-        # 3. Mise en cache
+
+        offer["_id"] = str(offer["_id"])
         cache_offer_details(offer_id, offer)
-        
-        return JSONResponse(offer)
+
+        return JSONResponse(content=offer)
     except HTTPException:
         raise
     except Exception as e:

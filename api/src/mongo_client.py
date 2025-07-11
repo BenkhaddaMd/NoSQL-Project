@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 import os
+from bson import ObjectId
 
 mongo_client = MongoClient(
     host=os.getenv("MONGO_HOST", "mongo"),
@@ -16,7 +17,12 @@ def search_offers(from_code, to_code, limit=10):
     ).sort("price", 1).limit(limit))
 
 def get_offer_details(offer_id):
-    return offers_collection.find_one({"_id": offer_id})
+    try:
+        object_id = ObjectId(offer_id)
+    except Exception:
+        return None  # si offer_id est invalide
+
+    return offers_collection.find_one({"_id": object_id})
 
 def initialize_mongo():
     # Création des index
